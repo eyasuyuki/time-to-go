@@ -1,5 +1,7 @@
 # Time to GO
 
+タイムインターメディア技術部会資料
+
 # Website
 
 http://www.golang.org/
