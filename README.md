@@ -23,7 +23,9 @@ http://go-tour-jp.appspot.com/
 - Makefileがいらない
  - GOPATHとgo get (デモ)
 - 速い→コンパイラ言語
-- 並列処理が楽に書ける→go routine
+- 並列処理が楽に書ける
+ - go routine
+ - channel
 - JSONと構造体の相互変換が楽 (デモ)
 - 最初からテンプレートエンジンを持っている
 - ネットワーク関連ライブラリが充実
