@@ -12,20 +12,20 @@ http://go-tour-jp.appspot.com/
 
 - 割愛します。（C/C++, Java経験者なら楽勝)
 - オブジェクト指向ではない
--- 構造体
--- メソッド
--- インターフェース
+ - 構造体
+ - メソッド
+ - インターフェース
 
 # 良い点
 
 - Makefileがいらない
--- GOPATHとgo get (デモ)
+ - GOPATHとgo get (デモ)
 - 速い→コンパイラ言語
 - 並列処理が楽に書ける→go routine
 - JSONと構造体の相互変換が楽 (デモ)
 - 最初からテンプレートエンジンを持っている
 - ネットワーク関連ライブラリが充実
--- CGIやサーブレットではなくhttpdを直接書ける
+ - CGIやサーブレットではなくhttpdを直接書ける
 - ポータビリティ→クロスコンパイルも楽
 
 # 悪い点
@@ -50,7 +50,7 @@ http://go-tour-jp.appspot.com/
 # 結論
 
 - サーバーサイドなら最適な選択
--- ex. Google App Engine
+ - ex. Google App Engine
 
 # デモ
 
