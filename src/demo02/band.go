@@ -7,12 +7,13 @@ import (
   "encoding/json"
   "errors"
   "strconv"
+  "os"
 )
 
 type Artist struct {
-  Id    int     `json:id`
-  Name  string  `json:name`
-  Part  string  `json:part`
+  Id    int     `json:"id"`
+  Name  string  `json:"name"`
+  Part  string  `json:"part"`
 }
 
 type Artists struct {
@@ -67,19 +68,39 @@ func (a *Artists)List() ([]*Artist) {
   return list
 }
 
+
+var data = []byte(`[
+{"id":0, "name":"Jhon", "part":"Guitar"}
+,{"id":0, "name":"Paul", "part":"Bass"}
+,{"id":0, "name":"George", "part":"Guitar"}
+,{"id":0, "name":"Ringo", "part":"Drums"}
+]`)
+
 func init() {
-  count = 0
+  var items []Artist
+  err := json.Unmarshal(data, &items)
+  if err != nil {
+    log.Printf("init: %s\n", err.Error())
+    os.Exit(1)
+  }
   artists = new(Artists)
+  artists.Items = make(map[int]*Artist)
+  count = -1
+  for i, item := range items {
+    log.Printf("init: i=%d, name=%s, part=%s\n", i, item.Name, item.Part)
+    count++
+    item.Id = i
+    artists.Items[i] = &item
+  }
 }
 
 // /artist?name=<var>&part=<var>
 func post(w http.ResponseWriter, r *http.Request) {
-  params := mux.Vars(r)
-  name := params["name"]
-  part := params["part"]
+  name := r.FormValue("name")
+  part := r.FormValue("part")
   log.Printf("post: name=%s, part=%s\n", name, part)
   item := artists.Create(name, part)
-  js, _ := json.Marshal(item)
+  js, _ := json.MarshalIndent(item, "", "    ")
   log.Printf("post: json=%s\n", js)
   w.Write(js)
 }
@@ -102,7 +123,7 @@ func get(w http.ResponseWriter, r *http.Request) {
     http.Error(w, err.Error(), http.StatusNotFound)
     return
   }
-  js, _ := json.Marshal(item)
+  js, _ := json.MarshalIndent(item, "", "    ")
   log.Printf("get: json=%s\n", js)
   w.WriteHeader(http.StatusCreated)
   w.Header().Set("Content-Type", "application/json")
@@ -128,7 +149,7 @@ func put(w http.ResponseWriter, r *http.Request) {
     http.Error(w, err.Error(), http.StatusNotFound)
     return
   }
-  js, _ := json.Marshal(item)
+  js, _ := json.MarshalIndent(item, "", "    ")
   log.Printf("put: json=%s\n", js)
   w.Header().Set("Content-Type", "application/json")
   w.Write(js)
@@ -156,7 +177,7 @@ func del(w http.ResponseWriter, r *http.Request) {
 }
 
 func list(w http.ResponseWriter, r *http.Request) {
-  js, _ := json.Marshal(artists.List())
+  js, _ := json.MarshalIndent(artists.List(), "", "    ")
   log.Printf("list: json=%s\n", js)
   w.Header().Set("Content-Type", "application/json")
   w.Write(js)
