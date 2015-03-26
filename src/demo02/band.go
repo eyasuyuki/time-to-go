@@ -90,7 +90,7 @@ func init() {
     log.Printf("init: i=%d, name=%s, part=%s\n", i, item.Name, item.Part)
     count++
     item.Id = i
-    artists.Items[i] = &item
+    artists.Items[i] = &Artist{i, item.Name, item.Part}
   }
 }
 
@@ -100,7 +100,7 @@ func post(w http.ResponseWriter, r *http.Request) {
   part := r.FormValue("part")
   log.Printf("post: name=%s, part=%s\n", name, part)
   item := artists.Create(name, part)
-  js, _ := json.MarshalIndent(item, "", "    ")
+  js, _ := json.MarshalIndent(item, "", "  ")
   log.Printf("post: json=%s\n", js)
   w.Write(js)
 }
@@ -123,7 +123,7 @@ func get(w http.ResponseWriter, r *http.Request) {
     http.Error(w, err.Error(), http.StatusNotFound)
     return
   }
-  js, _ := json.MarshalIndent(item, "", "    ")
+  js, _ := json.MarshalIndent(item, "", "  ")
   log.Printf("get: json=%s\n", js)
   w.WriteHeader(http.StatusCreated)
   w.Header().Set("Content-Type", "application/json")
@@ -149,7 +149,7 @@ func put(w http.ResponseWriter, r *http.Request) {
     http.Error(w, err.Error(), http.StatusNotFound)
     return
   }
-  js, _ := json.MarshalIndent(item, "", "    ")
+  js, _ := json.MarshalIndent(item, "", "  ")
   log.Printf("put: json=%s\n", js)
   w.Header().Set("Content-Type", "application/json")
   w.Write(js)
@@ -177,7 +177,7 @@ func del(w http.ResponseWriter, r *http.Request) {
 }
 
 func list(w http.ResponseWriter, r *http.Request) {
-  js, _ := json.MarshalIndent(artists.List(), "", "    ")
+  js, _ := json.MarshalIndent(artists.List(), "", "  ")
   log.Printf("list: json=%s\n", js)
   w.Header().Set("Content-Type", "application/json")
   w.Write(js)
