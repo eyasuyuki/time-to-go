@@ -25,10 +25,7 @@ var artists *Artists
 
 func (a *Artists)Create(name string, part string) (*Artist) {
   count++
-  item := new(Artist)
-  item.Id = count
-  item.Name = name
-  item.Part = part
+  item := &Artist{count, name, part}
   a.Items[item.Id] = item
   return item
 }
@@ -46,8 +43,12 @@ func (a *Artists)Update(id int, name string, part string) (*Artist, error) {
   if err != nil {
     return nil, err
   }
-  item.Name = name
-  item.Part = part
+  if name != "" {
+    item.Name = name
+  }
+  if part != "" {
+    item.Part = part
+  }
   return item, nil
 }
 
@@ -141,8 +142,8 @@ func put(w http.ResponseWriter, r *http.Request) {
     http.Error(w, err.Error(), http.StatusBadRequest)
     return
   }
-  name := params["name"]
-  part := params["part"]
+  name := r.FormValue("name")
+  part := r.FormValue("part")
   item, err := artists.Update(i, name, part)
   if err != nil {
     log.Printf("put: error: %s\n", err.Error())
