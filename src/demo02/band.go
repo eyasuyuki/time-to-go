@@ -112,11 +112,11 @@ func init() {
   artists = new(Artists)
   artists.Items = make(map[int]*Artist)
   count = -1
-  for i, item := range items {
-    log.Printf("init: i=%d, name=%s, part=%s\n", i, item.Name, item.Part)
+  for i, _ := range items {
+    log.Printf("init: i=%d, name=%s, part=%s\n", i, items[i].Name, items[i].Part)
     count++
-    item.Id = i
-    artists.Items[i] = &Artist{i, item.Name, item.Part}
+    items[i].Id = i
+    artists.Items[i] = &items[i]
   }
 }
 
