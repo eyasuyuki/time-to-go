@@ -186,13 +186,13 @@ func del(w http.ResponseWriter, r *http.Request) {
   i, err := strconv.Atoi(id)
   if err != nil {
     // bad argument
-    log.Printf("get: error: %s", err.Error())
+    log.Printf("del: error: %s", err.Error())
     http.Error(w, err.Error(), http.StatusBadRequest)
     return
   }
   err = artists.Delete(i)
   if err != nil {
-    log.Printf("get: error: %s", err.Error())
+    log.Printf("del: error: %s", err.Error())
     http.Error(w, err.Error(), http.StatusNotFound)
     return
   }
@@ -208,7 +208,6 @@ func list(w http.ResponseWriter, r *http.Request) {
 
 func main() {
   router := mux.NewRouter()
-  router.Queries("name", "", "part", "")
   router.HandleFunc("/artist/{id:[0-9]+}", get).Methods("GET")
   router.HandleFunc("/artist", post).Methods("POST")
   router.HandleFunc("/artist/{id:[0-9]+}", put).Methods("PUT")
