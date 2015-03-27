@@ -1,17 +1,17 @@
 package main
 
 import (
-  "github.com/gorilla/mux"
-  "log"
-  "net/http"
-  "encoding/json"
-  "html/template"
+	"encoding/json"
+	"github.com/gorilla/mux"
+	"html/template"
+	"log"
+	"net/http"
 )
 
 type Customer struct {
-  Email string  `json:"email"`
-  Name  string  `json:"name"`
-  Item  string  `json:"item"`
+	Email string `json:"email"`
+	Name  string `json:"name"`
+	Item  string `json:"item"`
 }
 
 var data = []byte(`[
@@ -45,25 +45,25 @@ var page = `
 var customers []Customer
 
 func init() {
-  err := json.Unmarshal(data, &customers)
-  if err != nil {
-    log.Fatalf("init: error=%S", err.Error())
-  }
+	err := json.Unmarshal(data, &customers)
+	if err != nil {
+		log.Fatalf("init: error=%S", err.Error())
+	}
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-  t := template.Must(template.New("page").Parse(page))
+	t := template.Must(template.New("page").Parse(page))
 
-  w.Header().Set("Content-Type", "text/html")
-  t.Execute(w, &customers)
+	w.Header().Set("Content-Type", "text/html")
+	t.Execute(w, &customers)
 }
 
 func main() {
-  router := mux.NewRouter()
-  router.HandleFunc("/customers", handler).Methods("GET")
+	router := mux.NewRouter()
+	router.HandleFunc("/customers", handler).Methods("GET")
 
-  http.Handle("/", router)
+	http.Handle("/", router)
 
-  log.Println("Listening...")
-  http.ListenAndServe(":3000", nil)
+	log.Println("Listening...")
+	http.ListenAndServe(":3000", nil)
 }
