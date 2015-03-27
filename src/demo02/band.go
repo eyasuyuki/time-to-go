@@ -19,11 +19,11 @@ type Artist struct {
 func (a *Artist)Marshal() ([]byte, error) {
   js, err := json.Marshal(a)
   if err != nil {
-    log.Printf("err=%s\n", err.Error())
+    log.Printf("err=%s", err.Error())
     return js, err
   }
   // log
-  log.Printf("js=%s\n", js)
+  log.Printf("js=%s", js)
 
   return js, err
 }
@@ -85,12 +85,12 @@ func (a *Artists)MarshalIndent() ([]byte, error) {
   list := a.List()
   js, err := json.MarshalIndent(list, "", "  ")
   if err != nil {
-    log.Printf("err=%s\n", err.Error())
+    log.Printf("err=%s", err.Error())
     return js, err
   }
   logtext, _ := json.Marshal(list)
   // log
-  log.Printf("js=%s\n", logtext)
+  log.Printf("js=%s", logtext)
 
   return js, err
 }
@@ -106,14 +106,14 @@ func init() {
   var items []Artist
   err := json.Unmarshal(data, &items)
   if err != nil {
-    log.Printf("init: %s\n", err.Error())
+    log.Printf("init: %s", err.Error())
     os.Exit(1)
   }
   artists = new(Artists)
   artists.Items = make(map[int]*Artist)
   count = -1
   for i, _ := range items {
-    log.Printf("init: i=%d, name=%s, part=%s\n", i, items[i].Name, items[i].Part)
+    log.Printf("init: i=%d, name=%s, part=%s", i, items[i].Name, items[i].Part)
     count++
     items[i].Id = i
     artists.Items[i] = &items[i]
@@ -124,7 +124,7 @@ func init() {
 func post(w http.ResponseWriter, r *http.Request) {
   name := r.FormValue("name")
   part := r.FormValue("part")
-  log.Printf("post: name=%s, part=%s\n", name, part)
+  log.Printf("post: name=%s, part=%s", name, part)
   item := artists.Create(name, part)
   js, _ := item.Marshal()
   w.Header().Set("Content-Type", "application/json")
@@ -135,17 +135,17 @@ func post(w http.ResponseWriter, r *http.Request) {
 func get(w http.ResponseWriter, r *http.Request) {
   params := mux.Vars(r)
   id := params["id"]
-  log.Printf("get: id=%s\n", id)
+  log.Printf("get: id=%s", id)
   i, err := strconv.Atoi(id)
   if err != nil {
     // bad argument
-    log.Printf("get: error: %s\n", err.Error())
+    log.Printf("get: error: %s", err.Error())
     http.Error(w, err.Error(), http.StatusBadRequest)
     return
   }
   item, err := artists.Read(i)
   if err != nil {
-    log.Printf("get: error: %s\n", err.Error())
+    log.Printf("get: error: %s", err.Error())
     http.Error(w, err.Error(), http.StatusNotFound)
     return
   }
@@ -162,7 +162,7 @@ func put(w http.ResponseWriter, r *http.Request) {
   i, err := strconv.Atoi(id)
   if err != nil {
     // bad argument
-    log.Printf("put: error: %s\n", err.Error())
+    log.Printf("put: error: %s", err.Error())
     http.Error(w, err.Error(), http.StatusBadRequest)
     return
   }
@@ -170,7 +170,7 @@ func put(w http.ResponseWriter, r *http.Request) {
   part := r.FormValue("part")
   item, err := artists.Update(i, name, part)
   if err != nil {
-    log.Printf("put: error: %s\n", err.Error())
+    log.Printf("put: error: %s", err.Error())
     http.Error(w, err.Error(), http.StatusNotFound)
     return
   }
@@ -186,13 +186,13 @@ func del(w http.ResponseWriter, r *http.Request) {
   i, err := strconv.Atoi(id)
   if err != nil {
     // bad argument
-    log.Printf("get: error: %s\n", err.Error())
+    log.Printf("get: error: %s", err.Error())
     http.Error(w, err.Error(), http.StatusBadRequest)
     return
   }
   err = artists.Delete(i)
   if err != nil {
-    log.Printf("get: error: %s\n", err.Error())
+    log.Printf("get: error: %s", err.Error())
     http.Error(w, err.Error(), http.StatusNotFound)
     return
   }
