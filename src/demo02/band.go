@@ -16,6 +16,18 @@ type Artist struct {
   Part  string  `json:"part"`
 }
 
+func (a *Artist)Marshal() ([]byte, error) {
+  js, err := json.Marshal(a)
+  if err != nil {
+    log.Printf("err=%s\n", err.Error())
+    return js, err
+  }
+  // log
+  log.Printf("js=%s\n", js)
+
+  return js, err
+}
+
 type Artists struct {
   Items  map[int]*Artist
 }
@@ -69,6 +81,19 @@ func (a *Artists)List() ([]*Artist) {
   return list
 }
 
+func (a *Artists)MarshalIndent() ([]byte, error) {
+  list := a.List()
+  js, err := json.MarshalIndent(list, "", "  ")
+  if err != nil {
+    log.Printf("err=%s\n", err.Error())
+    return js, err
+  }
+  logtext, _ := json.Marshal(list)
+  // log
+  log.Printf("js=%s\n", logtext)
+
+  return js, err
+}
 
 var data = []byte(`[
 {"id":0, "name":"Jhon", "part":"Guitar"}
@@ -101,8 +126,8 @@ func post(w http.ResponseWriter, r *http.Request) {
   part := r.FormValue("part")
   log.Printf("post: name=%s, part=%s\n", name, part)
   item := artists.Create(name, part)
-  js, _ := json.MarshalIndent(item, "", "  ")
-  log.Printf("post: json=%s\n", js)
+  js, _ := item.Marshal()
+  w.Header().Set("Content-Type", "application/json")
   w.Write(js)
 }
 
@@ -124,8 +149,7 @@ func get(w http.ResponseWriter, r *http.Request) {
     http.Error(w, err.Error(), http.StatusNotFound)
     return
   }
-  js, _ := json.MarshalIndent(item, "", "  ")
-  log.Printf("get: json=%s\n", js)
+  js, _ := item.Marshal()
   w.WriteHeader(http.StatusCreated)
   w.Header().Set("Content-Type", "application/json")
   w.Write(js)
@@ -150,8 +174,7 @@ func put(w http.ResponseWriter, r *http.Request) {
     http.Error(w, err.Error(), http.StatusNotFound)
     return
   }
-  js, _ := json.MarshalIndent(item, "", "  ")
-  log.Printf("put: json=%s\n", js)
+  js, _ := item.Marshal()
   w.Header().Set("Content-Type", "application/json")
   w.Write(js)
 }
@@ -178,8 +201,7 @@ func del(w http.ResponseWriter, r *http.Request) {
 }
 
 func list(w http.ResponseWriter, r *http.Request) {
-  js, _ := json.MarshalIndent(artists.List(), "", "  ")
-  log.Printf("list: json=%s\n", js)
+  js, _ := artists.MarshalIndent()
   w.Header().Set("Content-Type", "application/json")
   w.Write(js)
 }
