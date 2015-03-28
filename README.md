@@ -67,19 +67,19 @@ http://go-tour-jp.appspot.com/
     // Code from: http://www.alexedwards.net/blog/a-mux-showdown
 
     package main
-    
+
     import (
       "github.com/gorilla/mux"
       "log"
       "net/http"
     )
-    
+
     func handler(w http.ResponseWriter, r *http.Request) {
       params := mux.Vars(r)
       name := params["name"]
       w.Write([]byte("Hello " + name))
     }
-    
+
     func main() {
       router := mux.NewRouter()
       router.HandleFunc("/user/{name:[a-z]+}/profile", handler).Methods("GET")
@@ -95,10 +95,32 @@ http://go-tour-jp.appspot.com/
     mkdir gocode
     cd gocode
     export GOPATH=`pwd`:~/git/time-to-go/src/demo01
-	go get github.com/gorilla/mux
-	go run ~/git/time-to-go/src/demo01/httpd.go
-	go build ~/git/time-to-go/src/demo01/httpd.go
+    go get github.com/gorilla/mux
+    go run ~/git/time-to-go/src/demo01/httpd.go
+    go build ~/git/time-to-go/src/demo01/httpd.go
 
 ## JSONと構造体の相互変換
 ## テンプレートエンジン
 ## Google App Engine
+
+### インストール
+
+    brew install go-app-engine-64
+
+### ローカル環境での実行
+
+    export GOPATH=~/gopath:~/git/time-to-go/src/demo04
+    cd time-to-go/src/demo04
+    goapp serve
+
+### 接続テスト
+
+    curl -i http://127.0.0.1:8080/artist/list
+    curl -i http://127.0.0.1:8080/artist/0
+    curl -i -X POST http://127.0.0.1:8080/artist -d "name=Jake" -d "part=Ukulele"
+    curl -i -X PUT http://127.0.0.1:8080/artist/0 -d "name=Brian"
+    curl -i -X DELETE http://127.0.0.1:8080/artist/4
+
+### Google App Engineへのデプロイ
+
+    goapp deploy
