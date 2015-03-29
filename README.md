@@ -100,7 +100,148 @@ http://go-tour-jp.appspot.com/
     go build ~/git/time-to-go/src/demo01/httpd.go
 
 ## JSONと構造体の相互変換
+
+### 構造体の定義
+
+    type Artist struct {
+    	Id   int    `json:"id"`
+    	Name string `json:"name"`
+    	Part string `json:"part"`
+    }
+
+### JSONデータ
+
+    var data = `
+    [{"id":0, "name":"Jhon", "part":"Guitar"}
+    ,{"id":0, "name":"Paul", "part":"Bass"}
+    ,{"id":0, "name":"George", "part":"Guitar"}
+    ,{"id":0, "name":"Ringo", "part":"Drums"}]
+    `
+
+### encoding/jsonライブラリ
+
+    import (
+    	"encoding/json"
+    	// (略)
+    }
+
+### JSONのパーズ
+
+    var items []Artist
+    err := json.Unmarshal([]byte(data), &items)
+
+### 構造体からJSONを出力
+
+    func (a *Artist) Marshal() ([]byte, error) {
+    	js, err := json.Marshal(a)
+    	// (略)
+    	return js, err
+    }
+
+### RESTサーバー
+
+    func main() {
+    	router := mux.NewRouter()
+    	router.HandleFunc("/artist/{id:[0-9]+}", get).Methods("GET")
+    	router.HandleFunc("/artist", post).Methods("POST")
+    	router.HandleFunc("/artist/{id:[0-9]+}", put).Methods("PUT")
+    	router.HandleFunc("/artist/{id:[0-9]+}", del).Methods("DELETE")
+    	router.HandleFunc("/artist/list", list).Methods("GET")
+
+    	http.Handle("/", router)
+
+    	log.Println("Listening...")
+    	http.ListenAndServe(":3000", nil)
+    }
+
+### 起動
+
+    export GOPATH=`pwd`:~/git/time-to-go/src/demo02
+    go run ~/git/time-to-go/src/demo02/band.go
+
+### 接続テスト
+
+    curl -i http://127.0.0.1:3000/artist/list
+    curl -i http://127.0.0.1:3000/artist/0
+    curl -i -X POST http://127.0.0.1:3000/artist -d "name=Jake" -d "part=Ukulele"
+    curl -i -X PUT http://127.0.0.1:3000/artist/0 -d "name=Brian"
+    curl -i -X DELETE http://127.0.0.1:3000/artist/4
+
 ## テンプレートエンジン
+
+### template/htmlライブラリ
+
+    import (
+    	// (略)
+    	"html/template"
+    	// (略)
+    )
+
+### 構造体の定義
+
+    type Customer struct {
+    	Email string `json:"email"`
+    	Name  string `json:"name"`
+    	Item  string `json:"item"`
+    }
+
+### HTMLテンプレート
+
+    var page = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>顧客リスト</title>
+      </head>
+      <body>
+        <table>
+          <thead>
+            <tr><th>email</th><th>名前</th><th>購入品目</th></tr>
+          </thead>
+          <tbody>
+          {{range .}}
+            <tr><td>{{.Email}}</td><td>{{.Name}}</td><td>{{.Item}}</td></tr>
+          {{end}}
+          </tbody>
+        </table>
+      </body>
+    </html>
+    `
+
+### データと初期化
+
+#### JSONデータ
+
+    var data = []byte(`[
+      {"email":"suzuki@example.com",  "name":"鈴木", "item":"iPad mini"}
+      ,{"email":"sato@example.com",   "name":"佐藤", "item":"Xperia Z"}
+      ,{"email":"tanaka@example.com", "name":"田中", "item":"Surface Pro"}
+    ]`)
+
+#### 初期化
+
+    var customers []Customer
+    
+    func init() {
+    	err := json.Unmarshal(data, &customers)
+    	if err != nil {
+    		log.Fatalf("init: error=%S", err.Error())
+    	}
+    }
+
+### テンプレートのパーズ
+
+    func handler(w http.ResponseWriter, r *http.Request) {
+    	t := template.Must(template.New("page").Parse(page))
+
+### テンプレートの適用
+
+    	w.Header().Set("Content-Type", "text/html")
+    	t.Execute(w, &customers)
+    }
+    
+
 ## Google App Engine
 
 ### インストール
@@ -112,14 +253,6 @@ http://go-tour-jp.appspot.com/
     export GOPATH=~/gopath:~/git/time-to-go/src/demo04
     cd time-to-go/src/demo04
     goapp serve
-
-### 接続テスト
-
-    curl -i http://127.0.0.1:8080/artist/list
-    curl -i http://127.0.0.1:8080/artist/0
-    curl -i -X POST http://127.0.0.1:8080/artist -d "name=Jake" -d "part=Ukulele"
-    curl -i -X PUT http://127.0.0.1:8080/artist/0 -d "name=Brian"
-    curl -i -X DELETE http://127.0.0.1:8080/artist/4
 
 ### Google App Engineへのデプロイ
 
