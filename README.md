@@ -27,7 +27,7 @@ http://go-tour-jp.appspot.com/
  - go routine
  - channel
 - JSONと構造体の相互変換が楽 (デモ)
-- 最初からテンプレートエンジンを持っている
+- 最初からテンプレートエンジンを持っている (デモ)
 - ネットワーク関連ライブラリが充実
  - ex. CGIやサーブレットではなくhttpdを直接書ける
 - ポータビリティ→クロスコンパイルも楽
@@ -54,7 +54,7 @@ http://go-tour-jp.appspot.com/
 # 結論
 
 - サーバーサイドなら最適な選択
- - ex. Google App Engine
+ - ex. Google App Engine (デモ)
 
 # デモ
 
@@ -90,12 +90,17 @@ http://go-tour-jp.appspot.com/
       http.ListenAndServe(":3000", nil)
     }
 
+## gorilla muxライブラリ
+
+https://github.com/gorilla/mux
+
 ## GOPATHとgo get
 
-    mkdir gocode
-    cd gocode
     export GOPATH=`pwd`:~/git/time-to-go/src/demo01
     go get github.com/gorilla/mux
+
+## 実行とビルド
+
     go run ~/git/time-to-go/src/demo01/httpd.go
     go build ~/git/time-to-go/src/demo01/httpd.go
 
@@ -222,7 +227,7 @@ http://go-tour-jp.appspot.com/
 #### 初期化
 
     var customers []Customer
-    
+
     func init() {
     	err := json.Unmarshal(data, &customers)
     	if err != nil {
@@ -240,7 +245,7 @@ http://go-tour-jp.appspot.com/
     	w.Header().Set("Content-Type", "text/html")
     	t.Execute(w, &customers)
     }
-    
+
 
 ## Google App Engine
 
