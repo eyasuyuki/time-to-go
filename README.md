@@ -64,6 +64,8 @@ http://go-tour-jp.appspot.com/
 
 ## HTTPサーバー
 
+### ソースコード
+
     // Code from: http://www.alexedwards.net/blog/a-mux-showdown
 
     package main
@@ -90,19 +92,23 @@ http://go-tour-jp.appspot.com/
       http.ListenAndServe(":3000", nil)
     }
 
-## gorilla muxライブラリ
+### gorilla muxライブラリ
 
 https://github.com/gorilla/mux
 
-## GOPATHとgo get
+### GOPATHとgo get
 
     export GOPATH=`pwd`:~/git/time-to-go/src/demo01
     go get github.com/gorilla/mux
 
-## 実行とビルド
+### 実行とビルド
 
     go run ~/git/time-to-go/src/demo01/httpd.go
     go build ~/git/time-to-go/src/demo01/httpd.go
+
+### アクセス
+
+    curl -i http://127.0.0.1:3000/user/yasuyuki/profile
 
 ## JSONと構造体の相互変換
 
