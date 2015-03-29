@@ -98,7 +98,7 @@ https://github.com/gorilla/mux
 
 ### GOPATHとgo get
 
-    export GOPATH=`pwd`:~/git/time-to-go/src/demo01
+    export GOPATH=~/gocode:~/git/time-to-go/src/demo01
     go get github.com/gorilla/mux
 
 ### 実行とビルド
@@ -167,7 +167,7 @@ https://github.com/gorilla/mux
 
 ### 起動
 
-    export GOPATH=`pwd`:~/git/time-to-go/src/demo02
+    export GOPATH=~/gocode:~/git/time-to-go/src/demo02
     go run ~/git/time-to-go/src/demo02/band.go
 
 ### 接続テスト
@@ -261,7 +261,7 @@ https://github.com/gorilla/mux
 
 ### ローカル環境での実行
 
-    export GOPATH=~/gopath:~/git/time-to-go/src/demo04
+    export GOPATH=~/gocode:~/git/time-to-go/src/demo04
     cd time-to-go/src/demo04
     goapp serve
 
