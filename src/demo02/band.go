@@ -95,16 +95,16 @@ func (a *Artists) MarshalIndent() ([]byte, error) {
 	return js, err
 }
 
-var data = []byte(`[
-{"id":0, "name":"Jhon", "part":"Guitar"}
+var data = `
+[{"id":0, "name":"Jhon", "part":"Guitar"}
 ,{"id":0, "name":"Paul", "part":"Bass"}
 ,{"id":0, "name":"George", "part":"Guitar"}
-,{"id":0, "name":"Ringo", "part":"Drums"}
-]`)
+,{"id":0, "name":"Ringo", "part":"Drums"}]
+`
 
 func init() {
 	var items []Artist
-	err := json.Unmarshal(data, &items)
+	err := json.Unmarshal([]byte(data), &items)
 	if err != nil {
 		log.Printf("init: %s", err.Error())
 		os.Exit(1)
