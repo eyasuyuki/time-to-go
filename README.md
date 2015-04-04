@@ -266,6 +266,23 @@ https://github.com/gorilla/mux
     cd time-to-go/src/demo04
     goapp serve
 
+### 接続テスト
+
+    curl -i http://127.0.0.1:8080/artist/list
+    curl -i http://127.0.0.1:8080/artist/0
+    curl -i -X POST http://127.0.0.1:8080/artist -d "name=Jake" -d "part=Ukulele"
+    curl -i -X PUT http://127.0.0.1:8080/artist/0 -d "name=Brian"
+    curl -i -X DELETE http://127.0.0.1:8080/artist/4
+
 ### Google App Engineへのデプロイ
 
     goapp deploy
+
+
+### 接続テスト
+
+    curl -i http://hinerutojar-hrd.appspot.com/artist/list
+    curl -i http://hinerutojar-hrd.appspot.com/artist/0
+    curl -i -X POST http://hinerutojar-hrd.appspot.com/artist -d "name=Jake" -d "part=Ukulele"
+    curl -i -X PUT http://hinerutojar-hrd.appspot.com/artist/0 -d "name=Brian"
+    curl -i -X DELETE http://hinerutojar-hrd.appspot.com/artist/4
