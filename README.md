@@ -260,6 +260,49 @@ https://github.com/gorilla/mux
 
     brew install go-app-engine-64
 
+### app.yaml
+
+    application: hinerutojar-hrd
+    version: 1
+    runtime: go
+    api_version: go1
+
+    handlers:
+    - url: /.*
+      script: _go_app
+
+### ソースコード(一部)
+
+    var router = mux.NewRouter()
+
+    func init() {
+    	// init data
+    	var items []Artist
+    	err := json.Unmarshal(data, &items)
+    	if err != nil {
+    		// log only localhost
+    		log.Printf("init: %s", err.Error())
+    	}
+    	artists = new(Artists)
+    	artists.Items = make(map[int]*Artist)
+    	count = -1
+    	for i, _ := range items {
+    		// log only localhost
+    		log.Printf("init: i=%d, name=%s, part=%s", i, items[i].Name, items[i].Part)
+    		count++
+    		items[i].Id = i
+    		artists.Items[i] = &items[i]
+    	}
+
+    	// handlers
+    	router.HandleFunc("/artist/{id:[0-9]+}", get).Methods("GET")
+    	router.HandleFunc("/artist", post).Methods("POST")
+    	router.HandleFunc("/artist/{id:[0-9]+}", put).Methods("PUT")
+    	router.HandleFunc("/artist/{id:[0-9]+}", del).Methods("DELETE")
+    	router.HandleFunc("/artist/list", list).Methods("GET")
+    	http.Handle("/", router)
+    }
+
 ### ローカル環境での実行
 
     export GOPATH=~/gocode:~/git/time-to-go/src/demo04
