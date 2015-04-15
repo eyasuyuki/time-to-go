@@ -7,9 +7,31 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"html/template"
 	"strconv"
 )
 
+var page = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Band Database</title>
+  </head>
+  <body>
+    <table>
+      <thead>
+        <tr><th>id</th><th>name</th><th>part</th></tr>
+      </thead>
+      <tbody>
+      {{range .}}
+        <tr><td>{{.Id}}</td><td>{{.Name}}</td><td>{{.Part}}</td></tr>
+      {{end}}
+      </tbody>
+    </table>
+  </body>
+</html>
+`
 type Artist struct {
 	Id   int    `json:"id"`
 	Name string `json:"name"`
@@ -130,6 +152,7 @@ func init() {
 	router.HandleFunc("/artist/{id:[0-9]+}", put).Methods("PUT")
 	router.HandleFunc("/artist/{id:[0-9]+}", del).Methods("DELETE")
 	router.HandleFunc("/artist/list", list).Methods("GET")
+	router.HandleFunc("/index", index).Methods("GET")
 	http.Handle("/", router)
 }
 
@@ -222,4 +245,11 @@ func list(w http.ResponseWriter, r *http.Request) {
 	js, _ := artists.MarshalIndent(c)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(js)
+}
+
+func index(w http.ResponseWriter, r *http.Request) {
+	t := template.Must(template.New("page").Parse(page))
+
+	w.Header().Set("Content-Type", "text/html")
+	t.Execute(w, artists.List())
 }

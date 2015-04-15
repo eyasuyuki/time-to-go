@@ -206,6 +206,13 @@ func list(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
+func index(w http.ResponseWriter, r *http.Request) {
+	t := template.Must(template.New("page").Parse(page))
+
+	w.Header().Set("Content-Type", "text/html")
+	t.Execute(w, &customers)
+}
+
 func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/artist/{id:[0-9]+}", get).Methods("GET")
@@ -213,6 +220,7 @@ func main() {
 	router.HandleFunc("/artist/{id:[0-9]+}", put).Methods("PUT")
 	router.HandleFunc("/artist/{id:[0-9]+}", del).Methods("DELETE")
 	router.HandleFunc("/artist/list", list).Methods("GET")
+	router.HandleFunc("/index", index).Methods("GET")
 
 	http.Handle("/", router)
 
