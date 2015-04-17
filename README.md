@@ -124,10 +124,10 @@ https://github.com/gorilla/mux
 ### JSONデータ
 
     var data = `
-    [{"id":0, "name":"Jhon", "part":"Guitar"}
-    ,{"id":0, "name":"Paul", "part":"Bass"}
+    [{"id":0, "name":"Jhon",   "part":"Guitar"}
+    ,{"id":0, "name":"Paul",   "part":"Bass"}
     ,{"id":0, "name":"George", "part":"Guitar"}
-    ,{"id":0, "name":"Ringo", "part":"Drums"}]
+    ,{"id":0, "name":"Ringo",  "part":"Drums"}]
     `
 
 ### encoding/jsonライブラリ
@@ -189,12 +189,12 @@ https://github.com/gorilla/mux
     	// (略)
     )
 
-### 構造体の定義
+### 構造体の定義(再掲)
 
-    type Customer struct {
-    	Email string `json:"email"`
-    	Name  string `json:"name"`
-    	Item  string `json:"item"`
+    type Artist struct {
+    	Id   int    `json:"id"`
+    	Name string `json:"name"`
+    	Part string `json:"part"`
     }
 
 ### HTMLテンプレート
@@ -204,47 +204,26 @@ https://github.com/gorilla/mux
     <html>
       <head>
         <meta charset="UTF-8">
-        <title>顧客リスト</title>
+        <title>Band Database</title>
       </head>
       <body>
         <table>
           <thead>
-            <tr><th>email</th><th>名前</th><th>購入品目</th></tr>
+            <tr><th>id</th><th>name</th><th>part</th></tr>
           </thead>
           <tbody>
           {{range .}}
-            <tr><td>{{.Email}}</td><td>{{.Name}}</td><td>{{.Item}}</td></tr>
+            <tr><td>{{.Id}}</td><td>{{.Name}}</td><td>{{.Part}}</td></tr>
           {{end}}
           </tbody>
         </table>
       </body>
     </html>
-    `
-
-### データと初期化
-
-#### JSONデータ
-
-    var data = []byte(`[
-      {"email":"suzuki@example.com",  "name":"鈴木", "item":"iPad mini"}
-      ,{"email":"sato@example.com",   "name":"佐藤", "item":"Xperia Z"}
-      ,{"email":"tanaka@example.com", "name":"田中", "item":"Surface Pro"}
-    ]`)
-
-#### 初期化
-
-    var customers []Customer
-
-    func init() {
-    	err := json.Unmarshal(data, &customers)
-    	if err != nil {
-    		log.Fatalf("init: error=%S", err.Error())
-    	}
-    }
+  `
 
 ### テンプレートのパーズ
 
-    func handler(w http.ResponseWriter, r *http.Request) {
+    func index(w http.ResponseWriter, r *http.Request) {
     	t := template.Must(template.New("page").Parse(page))
 
 ### テンプレートの適用
@@ -253,6 +232,22 @@ https://github.com/gorilla/mux
     	t.Execute(w, &customers)
     }
 
+### ハンドラの登録
+
+    func main() {
+    	router := mux.NewRouter()
+      // (略)
+    	router.HandleFunc("/index", index).Methods("GET")
+
+    	http.Handle("/", router)
+
+    	log.Println("Listening...")
+    	http.ListenAndServe(":3000", nil)
+    }
+
+### HTMLページへのアクセス
+
+    http://127.0.0.1:3000/index
 
 ## Google App Engine
 
@@ -300,17 +295,19 @@ https://github.com/gorilla/mux
     	router.HandleFunc("/artist/{id:[0-9]+}", put).Methods("PUT")
     	router.HandleFunc("/artist/{id:[0-9]+}", del).Methods("DELETE")
     	router.HandleFunc("/artist/list", list).Methods("GET")
+    	router.HandleFunc("/index", index).Methods("GET")
     	http.Handle("/", router)
     }
 
 ### ローカル環境での実行
 
     export GOPATH=~/gocode:~/git/time-to-go/src/demo04
-    cd time-to-go/src/demo04
+    cd ~/git/time-to-go/src/demo04
     goapp serve
 
 ### 接続テスト
 
+    curl -i http://127.0.0.1:8080/index
     curl -i http://127.0.0.1:8080/artist/list
     curl -i http://127.0.0.1:8080/artist/0
     curl -i -X POST http://127.0.0.1:8080/artist -d "name=Jake" -d "part=Ukulele"
