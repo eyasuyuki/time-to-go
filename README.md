@@ -229,7 +229,7 @@ https://github.com/gorilla/mux
 ### テンプレートの適用
 
     	w.Header().Set("Content-Type", "text/html")
-    	t.Execute(w, &customers)
+    	t.Execute(w, artists.List())
     }
 
 ### ハンドラの登録
@@ -321,6 +321,7 @@ https://github.com/gorilla/mux
 
 ### 接続テスト
 
+    curl -i http://hinerutojar-hrd.appspot.com/index
     curl -i http://hinerutojar-hrd.appspot.com/artist/list
     curl -i http://hinerutojar-hrd.appspot.com/artist/0
     curl -i -X POST http://hinerutojar-hrd.appspot.com/artist -d "name=Jake" -d "part=Ukulele"
