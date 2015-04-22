@@ -1,4 +1,4 @@
-# Time to GO
+# Time to Go
 
 タイムインターメディア技術部会資料
 
